@@ -23,7 +23,7 @@ SET(ProjectName rp2040-freertos-template)
 if (DEFINED ENV{FREERTOS_PATH})
   SET(FREERTOS_PATH $ENV{FREERTOS_PATH})
 else()
-  SET(FREERTOS_PATH ${CMAKE_CURRENT_LIST_DIR}/FreeRTOS-Kernel)
+  SET(FREERTOS_PATH ${CMAKE_CURRENT_LIST_DIR}/FreeRTOS)
 endif()
 
 message("FreeRTOS Kernel located in ${FREERTOS_PATH}")
