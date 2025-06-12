@@ -66,54 +66,51 @@ void buzzer_task(void *pvParameters) {
 void button_task(void *pvParameters) {
     gpio_init(BUTTON_A_PIN);
     gpio_set_dir(BUTTON_A_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_A_PIN); // Habilita pull-up interno
+    gpio_pull_up(BUTTON_A_PIN);
 
     gpio_init(BUTTON_B_PIN);
     gpio_set_dir(BUTTON_B_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_B_PIN); // Habilita pull-up interno
-
-    bool last_button_a_state = true; // Assume que o botão começa solto (nível alto com pull-up)
-    bool last_button_b_state = true;
+    gpio_pull_up(BUTTON_B_PIN);
 
     while (true) {
-        bool current_button_a_state = gpio_get(BUTTON_A_PIN);
-        bool current_button_b_state = gpio_get(BUTTON_B_PIN);
+        bool button_a_pressed = !gpio_get(BUTTON_A_PIN); // Pressionado é nível BAIXO com pull-up
+        bool button_b_pressed = !gpio_get(BUTTON_B_PIN); // Pressionado é nível BAIXO com pull-up
 
-        // Botão A (controla LED) - detecta borda de descida (pressionado)
-        if (last_button_a_state && !current_button_a_state) {
-            if (led_task_suspended) {
-                vTaskResume(rgb_led_task_handle);
-                led_task_suspended = false;
-                printf("LED Task Resumed\n");
-            } else {
+        // Controle da tarefa do LED pelo Botão A
+        if (button_a_pressed) {
+            if (!led_task_suspended) {
                 vTaskSuspend(rgb_led_task_handle);
                 led_task_suspended = true;
-                // Apaga o LED ao suspender
                 gpio_put(LED_R_PIN, 0);
                 gpio_put(LED_G_PIN, 0);
                 gpio_put(LED_B_PIN, 0);
-                printf("LED Task Suspended\n");
+                printf("LED Task Suspended (Button A pressed)\n");
+            }
+        } else {
+            if (led_task_suspended) {
+                vTaskResume(rgb_led_task_handle);
+                led_task_suspended = false;
+                printf("LED Task Resumed (Button A released)\n");
             }
         }
-        last_button_a_state = current_button_a_state;
 
-        // Botão B (controla Buzzer) - detecta borda de descida (pressionado)
-        if (last_button_b_state && !current_button_b_state) {
+        // Controle da tarefa do Buzzer pelo Botão B
+        if (button_b_pressed) {
+            if (!buzzer_task_suspended) {
+                vTaskSuspend(buzzer_task_handle);
+                buzzer_task_suspended = true;             
+                gpio_put(BUZZER_A_PIN, 0);
+                printf("Buzzer Task Suspended (Button B pressed)\n");
+            }
+        } else {
             if (buzzer_task_suspended) {
                 vTaskResume(buzzer_task_handle);
                 buzzer_task_suspended = false;
-                printf("Buzzer Task Resumed\n");
-            } else {
-                vTaskSuspend(buzzer_task_handle);
-                buzzer_task_suspended = true;
-                // Desliga o buzzer ao suspender
-                gpio_put(BUZZER_A_PIN, 0);
-                printf("Buzzer Task Suspended\n");
+                printf("Buzzer Task Resumed (Button B released)\n");
             }
         }
-        last_button_b_state = current_button_b_state;
 
-        vTaskDelay(pdMS_TO_TICKS(100)); // Polling a cada 100ms
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
@@ -121,15 +118,15 @@ int main() {
     stdio_init_all();
     printf("Iniciando sistema multitarefa...\n");
 
+    // Prioridade da button_task pode ser maior para garantir responsividade
     xTaskCreate(rgb_led_task, "RGB_LED_Task", 256, NULL, 1, &rgb_led_task_handle);
-
     xTaskCreate(buzzer_task, "Buzzer_Task", 256, NULL, 1, &buzzer_task_handle);
-
-    xTaskCreate(button_task, "Button_Task", 256, NULL, 2, NULL); 
+    xTaskCreate(button_task, "Button_Task", 256, NULL, 2, NULL); // Prioridade 2
 
     vTaskStartScheduler();
 
     while (1) {
+        // NOP
     };
     return 0;
 }
