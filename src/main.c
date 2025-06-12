@@ -5,14 +5,14 @@
 #include "hardware/gpio.h"
 
 // --- Definições de Pinos ---
-#define LED_R_PIN 13 // Pino para o componente Vermelho do LED RGB
-#define LED_G_PIN 11 // Pino para o componente Verde do LED RGB
-#define LED_B_PIN 12 // Pino para o componente Azul do LED RGB
+#define LED_R_PIN 13
+#define LED_G_PIN 11 
+#define LED_B_PIN 12 
 
-#define BUZZER_A_PIN 21 // Pino de controle A do Buzzer
+#define BUZZER_A_PIN 21
 
-#define BUTTON_A_PIN 5 // Botão para controlar a tarefa do LED
-#define BUTTON_B_PIN 6 // Botão para controlar a tarefa do Buzzer
+#define BUTTON_A_PIN 5 
+#define BUTTON_B_PIN 6
 
 // Handles para as tarefas
 TaskHandle_t rgb_led_task_handle = NULL;
