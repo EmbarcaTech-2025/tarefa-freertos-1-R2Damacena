@@ -61,14 +61,11 @@ Desenvolver um sistema multitarefa embarcado utilizando a placa BitDogLab (basea
     *   Botão A (Controle LED): GPIO 5
     *   Botão B (Controle Buzzer): GPIO 6
 
-## 🖼️ Vídeos do projeto em funcionamento
+## 🖼️ Vídeo e imagem do projeto em funcionamento
 
-<!--
-    Insira aqui screenshots, fotos da montagem ou um link para um vídeo do projeto funcionando.
-    Exemplo:
-    ![Foto da Montagem](caminho/para/sua/imagem.jpg)
-    [Vídeo do Projeto](link/para/seu/video.mp4)
--->
+https://github.com/user-attachments/assets/a9f709e6-5e79-48f4-8a21-646cab4b11cc
+
+![Monitor serial exibindo o status de botões sendo pressionados e soltos.](https://github.com/user-attachments/assets/92ed8e58-6d63-415f-ae75-d4021f169b2b)
 
 ## 📈 Resultados
 
